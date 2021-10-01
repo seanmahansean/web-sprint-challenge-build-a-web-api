@@ -20,22 +20,29 @@ router.get("/:id", validateProjectId, (req, res) => {
   res.json(req.project)
 })
 
-router.post("/:id", validateProject, (req, res, next) => {
-  Projects.insert({
-    name: req.name,
-    description: req.description,
-    completed: req.completed
-  })
-    .then(nwProj => {
-      res.status(201).json(nwProj)
+router.post("/:id", validateProject, async (req, res, next) => {
+  try{
+    const nwProj = await Projects.insert({
+      name: req.name,
+      description: req.description,
+      completed: req.completed
     })
-    .catch(next())
+    res.status(201).json(nwProj)
+  }catch(err){
+    next(err)
+  }
 })
 
 router.put("/:id", validateProjectId, validateProject, (req, res) => {
   Projects.update(req.params.id, req.body)
     .then(proj => {
-      res.status(200).json(proj)
+      if(!req.body.completed){
+        res.status(400).json({
+          message: "Not complete"
+        })
+      }else{
+        res.status(200).json(proj)
+      }
     })
     .catch(err => {
       res.status(500).json({
@@ -44,14 +51,12 @@ router.put("/:id", validateProjectId, validateProject, (req, res) => {
     })
 })
 
-router.delete("/:id", validateProjectId, async (req, res) => {
+router.delete("/:id", validateProjectId, async (req, res, next) => {
   try{
     await Projects.remove(req.params.id)
     res.status(200).json(req.project)
   }catch(err){
-    res.status(404).json({
-      message: err.message
-    })
+    next(err)
   }
 })
 
