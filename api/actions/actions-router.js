@@ -47,7 +47,9 @@ router.put("/:id", validateAction, validateActionId, (req, res, next) => {
     .then(act => {
       res.json(act)
     })
-    .catch(next())
+    .catch(err => {
+      next(err)
+    })
 })
 
 router.use((err, req, res) => {

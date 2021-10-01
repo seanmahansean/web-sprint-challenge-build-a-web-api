@@ -19,9 +19,9 @@ async function validateProjectId (req, res, next){
 function validateProject (req, res, next){
   const {name, description, completed} = req.body;
   if(!name || !name.trim() || !description || !description.trim()){
-    res.status(400).json({
+    next(res.status(400).json({
       message: "missing either name or description"
-    })
+    }))
   }else{
     req.name = name.trim()
     req.description = description.trim()
