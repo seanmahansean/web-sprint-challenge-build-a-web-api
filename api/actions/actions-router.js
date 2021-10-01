@@ -23,11 +23,18 @@ router.get("/:id", validateActionId, (req, res) => {
 })
 
 router.post("/", (req, res, next) => {
-  Actions.insert(req.body)
+  Actions.insert({
+    project_id: req.project_id,
+    description: req.description,
+    notes: req.notes,
+    completed: req.completed
+  })
     .then(nwAct => {
       res.status(201).json(nwAct)
     })
-    .catch(next())
+    .catch(err => {
+      next(err)
+    })
 })
 
 router.delete("/:id", validateActionId, async (req, res, next) => {
