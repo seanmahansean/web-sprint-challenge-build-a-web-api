@@ -20,7 +20,7 @@ router.get("/:id", validateProjectId, (req, res) => {
   res.json(req.project)
 })
 
-router.post("/:id", validateProject, async (req, res, next) => {
+router.post("/", validateProject, async (req, res, next) => {
   try{
     const nwProj = await Projects.insert({
       name: req.name,
